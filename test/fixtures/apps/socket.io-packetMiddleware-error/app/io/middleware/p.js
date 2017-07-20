@@ -1,8 +1,9 @@
 'use strict';
 
 module.exports = app => {
-  return function* (next) {
+  return async function (ctx, next) {
     throw new Error('packetMiddleware Error!');
-    yield* next;
+
+    await next();
   };
 };

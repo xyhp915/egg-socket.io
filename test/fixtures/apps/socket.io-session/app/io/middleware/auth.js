@@ -1,19 +1,22 @@
-'use strict';
-
 const fs = require('fs');
 
 module.exports = app => {
   if (fs.existsSync(app.config.disconnectFile)) {
     fs.unlinkSync(app.config.disconnectFile);
   }
-  return function* (next) {
-    if (!this.session.user) {
-      return this.socket.emit('forbidden');
+  return async function (ctx, next) {
+    if (!ctx.session.user) {
+      console.log('===============EMIT FORBIDDEN+++++ EVENT')
+      return ctx.socket.emit('forbidden');
     }
-    this.emit('join', app.config.disconnectFile);
 
-    yield* next;
-    
+    ctx.emit('join', app.config.disconnectFile);
+
+    console.log('=============== BEFORE RELEASE SOMETHING ++++');
+
+    await next();
+
+    console.log('=============== END RELEASE SOMETHING ++++');
     fs.writeFile(app.config.disconnectFile, 'true');
   };
 };

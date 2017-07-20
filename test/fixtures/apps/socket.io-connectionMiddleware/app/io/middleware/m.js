@@ -6,9 +6,9 @@ module.exports = app => {
   if (fs.existsSync(app.config.disconnectFile)) {
     fs.unlinkSync(app.config.disconnectFile);
   }
-  return function* (next) {
-    this.emit('connected', app.config.disconnectFile);
-    yield* next;
+  return async function (ctx, next) {
+    ctx.emit('connected', app.config.disconnectFile);
+    await next();
     fs.writeFile(app.config.disconnectFile, 'true');
   };
 };

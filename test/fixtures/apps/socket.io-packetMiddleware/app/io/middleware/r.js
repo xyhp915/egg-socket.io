@@ -1,8 +1,9 @@
 'use strict'
 
 module.exports = app => {
-  return function* (next) {
-    yield* next;
-    this.socket.emit('thisMessageMeansRelease', 'true');
+  return async function (ctx, next) {
+    await next();
+
+    ctx.socket.emit('thisMessageMeansRelease', 'true');
   };
 };
